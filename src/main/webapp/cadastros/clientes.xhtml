@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+    
+	<ui:composition template="/layout/layout.xhtml">
+		<ui:define name="conteudo">
+		<h:form id="frmClientes">
+			<p:growl id="growl" sticky="true" />
+		   
+			<h:panelGrid id="gridFormClientes" columns="3">
+			    <p:outputLabel for="nome">Nome: </p:outputLabel>
+			    
+			    <p:inputText id="nome" value="#{clientesBean.cliente.nome}" required="true" />
+			   
+				<p:commandButton style="float: right" id="save" value="Salvar" tyleClass="ui-priority-primary"
+				              action="#{clientesBean.salvar}" icon="ui-icon-disk" update="growl, clientesList">
+				       <f:ajax execute="@form" render="@form"/>
+			   	</p:commandButton>
+			</h:panelGrid>   
+			<br/>
+		    <p:dataTable id="clientesList" var="clientes" value="#{clientesBean.clientes}" emptyMessage="Não há registros na lista">
+				<p:column headerText="Id">
+				   <h:outputText value="#{customer.id}"/>
+				</p:column>
+				
+				<p:column headerText="Nome">
+				   <p:inputText id="nome" value="#{clientes.nome}"/>
+				</p:column>
+				
+				<p:column headerText="Status">
+				   <p:inputText id="status" value="#{clientes.status}"/>
+				</p:column>
+				
+				<p:column headerText="Alterar">
+				   <p:commandButton update=":clientesList :frmClientes" value="Alterar" icon="ui-icon-closethick"
+				                styleClass="ui-priority-primary">
+				        <f:setPropertyActionListener target="#{clientesBean.salvar}" value="#{cliente}" />
+				   </p:commandButton>
+				</p:column>
+				
+				<p:column headerText="Remover">
+				   <p:commandButton update=":clientesList :frmClientes" value="Delete" icon="ui-icon-closethick"
+				                styleClass="ui-priority-primary">
+				        <f:setPropertyActionListener target="#{clientesBean.remover}" value="#{cliente}" />
+				   </p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+    </ui:define>
+  </ui:composition>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+  <ui:composition template="/layout/layout.xhtml">
+    <ui:define name="conteudo">
+    	<h:form id="frmIndex">
+			<h:commandLink action="/cadastros/clientes.xhtml" value="Clientes"/><br/>
+			<h:commandLink action="/cadastros/processos.xhtml" value="Processos"/><br/>
+			<h:commandLink action="/cadastros/intimacoespublicacoes.xhtml" value="Intimações e Publicações"/>
+    	</h:form>
+    </ui:define>
+  </ui:composition>
+</html>
