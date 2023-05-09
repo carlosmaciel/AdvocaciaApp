@@ -1,20 +1,20 @@
 package br.com.advocacia.mb;
 
 import java.io.Serializable;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 import br.com.advocacia.dao.impl.ClienteDAO;
 import br.com.advocacia.model.Cliente;
 
-@Named
-@SessionScoped
+@ManagedBean(name="clientesBean")
+@RequestScoped
 public class ClientesBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -22,36 +22,72 @@ public class ClientesBean implements Serializable{
 	private Cliente cliente;
 	private List<Cliente> clientes = null;
 	
-	@Inject
-	private ClienteDAO dao;
+	private ClienteDAO dao = new ClienteDAO();
 		
 	@PostConstruct
     public void init() {
-		cliente = new Cliente();
-        listar();
+		novo();
     }
     
     public void salvar() {
-		dao.salvar(cliente);
-		listar();
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Cliente salvo com sucesso."));
+    	
+		try {
+			String mensagem = null;
+			
+			if(cliente.getId() == null) {
+				dao.salvar(cliente);
+				mensagem = "Cliente salvo com sucesso.";
+				novo();
+			} else {
+				mensagem = "Cliente alterado com sucesso.";
+				
+				if(isStatusUpdatedToInativo()) {
+					//Usuário está tentando inativar um processo
+					if(hasProcesso()) {
+						//Processo está associado a alguma intimação ou publicação
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Não é permitido inativar um cliente que esteja associado a algum processo ativa."));
+						novo();
+						return;
+					} else {
+						dao.salvar(cliente);
+						novo();
+					}
+				} else {
+					dao.salvar(cliente);
+					novo();
+				}
+			}
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(mensagem));			
+		} catch (Exception e) {
+			Throwable result = e;
+			
+			if(result.getCause() instanceof SQLIntegrityConstraintViolationException || (result.getCause() != null && result.getCause().getCause() instanceof SQLIntegrityConstraintViolationException)) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Já existe um Cliente com este nome cadastrado."));
+				novo();
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(e.getMessage()));
+			}
+		}		
 	}
     
-    public void alterar() {
-		dao.salvar(cliente);
-		listar();
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Cliente alterado com sucesso."));
-	}
-    
-    public void remover() {
-    	cliente.setStatus(0);
-		dao.remover(cliente);
-		listar();
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Cliente removido com sucesso."));
-	}
+    private boolean hasProcesso() {
+    	return dao.hasProcesso(cliente);
+    }
+        
+    private boolean isStatusUpdatedToInativo() {
+    	Integer INATIVO = 0;    	    	
+    	Cliente clienteBanco = dao.buscarPorId(cliente.getId());
+    	
+    	if(!clienteBanco.getStatus().equals(cliente.getStatus()) && cliente.getStatus().equals(INATIVO))
+    		return true;
+    	
+    	return false;
+    }
     
     public void listar() {
-    	setClientes(dao.listar());
+    	List<Cliente> clientes = dao.listar();
+    	this.clientes = clientes;
 	}
     
     public void buscarPorId() {
@@ -60,6 +96,8 @@ public class ClientesBean implements Serializable{
     
     public void novo() {
     	cliente = new Cliente();
+    	cliente.setStatus(1);
+    	listar();
 	}
 
 	public List<Cliente> getClientes() {
@@ -76,5 +114,5 @@ public class ClientesBean implements Serializable{
 
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
-	}
+	}	
 }

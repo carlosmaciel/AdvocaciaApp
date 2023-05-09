@@ -7,48 +7,46 @@
     
 	<ui:composition template="/layout/layout.xhtml">
 		<ui:define name="conteudo">
-		<h:form id="frmClientes">
-			<p:growl id="growl" sticky="true" />
-		   
-			<h:panelGrid id="gridFormClientes" columns="3">
-			    <p:outputLabel for="nome">Nome: </p:outputLabel>
-			    
-			    <p:inputText id="nome" value="#{clientesBean.cliente.nome}" required="true" />
-			   
-				<p:commandButton style="float: right" id="save" value="Salvar" tyleClass="ui-priority-primary"
-				              action="#{clientesBean.salvar}" icon="ui-icon-disk" update="growl, clientesList">
-				       <f:ajax execute="@form" render="@form"/>
-			   	</p:commandButton>
-			</h:panelGrid>   
-			<br/>
-		    <p:dataTable id="clientesList" var="clientes" value="#{clientesBean.clientes}" emptyMessage="Não há registros na lista">
-				<p:column headerText="Id">
-				   <h:outputText value="#{customer.id}"/>
-				</p:column>
-				
-				<p:column headerText="Nome">
-				   <p:inputText id="nome" value="#{clientes.nome}"/>
-				</p:column>
-				
-				<p:column headerText="Status">
-				   <p:inputText id="status" value="#{clientes.status}"/>
-				</p:column>
-				
-				<p:column headerText="Alterar">
-				   <p:commandButton update=":clientesList :frmClientes" value="Alterar" icon="ui-icon-closethick"
-				                styleClass="ui-priority-primary">
-				        <f:setPropertyActionListener target="#{clientesBean.salvar}" value="#{cliente}" />
-				   </p:commandButton>
-				</p:column>
-				
-				<p:column headerText="Remover">
-				   <p:commandButton update=":clientesList :frmClientes" value="Delete" icon="ui-icon-closethick"
-				                styleClass="ui-priority-primary">
-				        <f:setPropertyActionListener target="#{clientesBean.remover}" value="#{cliente}" />
-				   </p:commandButton>
-				</p:column>
-			</p:dataTable>
-		</h:form>
-    </ui:define>
+			<h:form id="frmClientes">
+				<center><h2>Cadastro de Clientes</h2></center>	
+				<h:panelGrid id="gridFormClientes" styleClass="customPanelGrid" columns="2">
+				    <p:outputLabel for="nome">Nome: </p:outputLabel>				    
+				    <p:inputText id="nome" value="#{clientesBean.cliente.nome}" styleClass="camposForm"/>
+				   	
+					<p:commandButton id="save" value="Salvar" styleClass="ui-priority-primary"
+					              action="#{clientesBean.salvar}" icon="ui-icon-disk" update="growl, frmClientes, listaClientes">
+					       <f:ajax execute="@form" render="@form"/>
+				   	</p:commandButton>
+				</h:panelGrid>  
+			</h:form> 
+				<br/>
+			<h:form id="listaClientes">
+			    <p:dataTable id="clientesList" var="cliente" value="#{clientesBean.clientes}" emptyMessage="Não há registros na lista">
+					<p:column headerText="Id" styleClass="columnId">
+					   <h:outputText value="#{cliente.id}"/>
+					</p:column>
+					
+					<p:column headerText="Nome" styleClass="objectsCentered">
+					   <p:inputText id="nomeDT" value="#{cliente.nome}" styleClass="camposFormDataTable"/>
+					</p:column>
+					
+					<p:column headerText="Status" styleClass="objectsCentered columnStatus">
+					   <p:selectOneMenu id="status" value="#{cliente.status}">
+					   		<f:selectItem itemLabel="Inativo" itemValue="0"/>
+	                   		<f:selectItem itemLabel="Ativo" itemValue="1"/>
+	                   </p:selectOneMenu>
+					</p:column>
+					
+					<p:column headerText="Alterar" styleClass="objectsCentered columnAlterar">
+					   <p:commandButton update=":frmClientes, clientesList" 
+					   				action="#{clientesBean.salvar}"
+					   				value="Alterar" icon="ui-icon-closethick"
+					                styleClass="ui-priority-primary">
+					        <f:setPropertyActionListener target="#{clientesBean.cliente}" value="#{cliente}" />
+					   </p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+	    </ui:define>
   </ui:composition>
 </html>

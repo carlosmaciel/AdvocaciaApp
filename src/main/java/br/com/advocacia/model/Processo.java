@@ -8,12 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "clientes")
-public class Cliente implements Serializable {
+@Table(name = "processos")
+public class Processo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,16 +23,20 @@ public class Cliente implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "nome", unique = true)
-	private String nome;
+	@Column(name = "numero_do_processo", unique = true)
+	private Long numero;
+	
+	@ManyToOne
+    @JoinColumn(name = "id_cliente")
+	private Cliente cliente;
+	
+	@OneToMany(mappedBy="processo")
+    private Set<IntimacaoPublicacao> intimacaopublicacao;
 	
 	@Column(name = "status")
 	private Integer status;
-	
-	@OneToMany(mappedBy="cliente")
-    private Set<Processo> processos;
 
-	public Cliente() {}
+	public Processo() {}
 
 	public Long getId() {
 		return id;
@@ -40,12 +46,20 @@ public class Cliente implements Serializable {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public Long getNumero() {
+		return numero;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setNumero(Long numero) {
+		this.numero = numero;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
 	public Integer getStatus() {
@@ -56,18 +70,18 @@ public class Cliente implements Serializable {
 		this.status = status;
 	}
 
-	public Set<Processo> getProcessos() {
-		return processos;
+	public Set<IntimacaoPublicacao> getIntimacaopublicacao() {
+		return intimacaopublicacao;
 	}
 
-	public void setProcessos(Set<Processo> processos) {
-		this.processos = processos;
+	public void setIntimacaopublicacao(Set<IntimacaoPublicacao> intimacaopublicacao) {
+		this.intimacaopublicacao = intimacaopublicacao;
 	}
 	
 	@Override
     public boolean equals(Object other) {
-        return (other instanceof Cliente) && (id != null)
-            ? id.equals(((Cliente) other).id)
+        return (other instanceof Processo) && (id != null)
+            ? id.equals(((Processo) other).id)
             : (other == this);
     }
 

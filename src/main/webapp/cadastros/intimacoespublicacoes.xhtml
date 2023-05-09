@@ -2,11 +2,97 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:p="http://primefaces.org/ui">
     
   <ui:composition template="/layout/layout.xhtml">
-    <ui:define name="conteudo">
-      <h1>Página Inicial - Funcionalidade Principal</h1>
-    </ui:define>
+    <ui:define name="conteudo">    		
+			<h:form id="frmIntimacoesPublicacoes">	  
+				<center><h2>Cadastro de Intimações e Publicações</h2></center>	 
+				<h:panelGrid  id="gridFormIntimacoesPublicacoes" columns="2"  layout="flex"
+								columnClasses="col-12 md:col-3 xl:col-2, col-12 md:col-9 xl:col-4"
+				                 styleClass="customPanelGrid" contentStyleClass="ui-fluid">
+				
+					<p:outputLabel for="tipo">Tipo: </p:outputLabel>			
+				    <p:selectOneMenu id="tipo" style="width: 100%" value="#{intimacoesPublicacoesBean.intimacaoPublicacao.tipo}">
+				   		<f:selectItem itemLabel="Intimação" itemValue="0"/>
+                   		<f:selectItem itemLabel="Publicação" itemValue="1"/>
+                    </p:selectOneMenu>
+					
+					<p:outputLabel for="data">Data: </p:outputLabel>				    
+				    <p:inputMask mask="99/99/9999" style="width: 100%" id="data"  value="#{intimacoesPublicacoesBean.intimacaoPublicacao.data}" requiredMessage="Campo Data é obrigatório!" required="true">
+				    	<f:convertDateTime pattern="dd/MM/yyyy"/>
+				    </p:inputMask>
+				   				   
+				    <p:outputLabel for="processo">Processo: </p:outputLabel>	
+	                <p:selectOneMenu id="processo" style="width: 100%" value="#{intimacoesPublicacoesBean.intimacaoPublicacao.processo}"
+	                			required="true" requiredMessage="Campo Processo é obrigatório!" dynamic="true">
+				    	<f:selectItem itemLabel="Selecione o processo" noSelectionOption="true"/>  
+						<f:selectItems value="#{intimacoesPublicacoesBean.processos}" />
+	                </p:selectOneMenu>
+				   
+				    <p:outputLabel for="texto">Texto: </p:outputLabel>				    
+				    <p:inputTextarea maxlength="300" style="width: 100%" id="texto" value="#{intimacoesPublicacoesBean.intimacaoPublicacao.texto}"/>
+				   				    
+					<p:commandButton id="save" value="Salvar" tyleClass="ui-priority-primary"
+					              action="#{intimacoesPublicacoesBean.salvar}" icon="ui-icon-disk" update="growl, frmIntimacoesPublicacoes, frmListaIntimacoesPublicacoes">
+					       <f:ajax execute="@form" render="@form"/>
+				   	</p:commandButton>
+				</h:panelGrid>  
+			</h:form> 
+				<br/>
+			<h:form id="frmListaIntimacoesPublicacoes">
+			    <p:dataTable id="intimacoesPublicacoesList" var="intpub" value="#{intimacoesPublicacoesBean.intimacoesPublicacoes}" emptyMessage="Não há registros na lista">
+					<p:column headerText="Id" styleClass="columnId">
+					   <h:outputText value="#{intpub.id}"/>
+					</p:column>
+					
+					<p:column headerText="Tipo" styleClass="objectsCentered columnAlterar">
+					   <p:selectOneMenu id="tipo" value="#{intpub.tipo}" style="width: 70%">
+					   		<f:selectItem itemLabel="Intimação" itemValue="0"/>
+	                   		<f:selectItem itemLabel="Publicação" itemValue="1"/>
+	                   </p:selectOneMenu>
+					</p:column>
+					
+					<p:column headerText="Data" styleClass="objectsCentered columnAlterar">
+						<p:inputMask mask="99/99/9999"  value="#{intpub.data}" style="width: 100px; text-align: center" requiredMessage="Campo Data é obrigatório!" required="true">
+							<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</p:inputMask>
+				   	</p:column>
+					
+					<p:column headerText="Processo" styleClass="objectsCentered columnProcesso">
+	                	<p:selectOneMenu id="processo" value="#{intpub.processo}" style="width: 70%; text-align: right !important;"
+		                			required="true" requiredMessage="Campo Processo é obrigatório!" dynamic="true">
+							<f:selectItems value="#{intimacoesPublicacoesBean.processos}" />
+		                </p:selectOneMenu>
+					</p:column>
+					
+					<p:column headerText="Texto" styleClass="objectsCentered">
+					   <p:inputTextarea id="texto" value="#{intpub.texto}" styleClass="camposFormDataTable"/>
+					</p:column>
+					
+					<p:column headerText="Status" styleClass="objectsCentered columnStatus">
+					   <p:selectOneMenu id="status" value="#{intpub.status}">
+					   		<f:selectItem itemLabel="Inativo" itemValue="0"/>
+	                   		<f:selectItem itemLabel="Ativo" itemValue="1"/>
+	                   </p:selectOneMenu>
+					</p:column>
+					
+					<p:column headerText="Alterar" styleClass="objectsCentered columnAlterar" exportable="false">
+					   <p:commandButton update=":frmIntimacoesPublicacoes, :frmListaIntimacoesPublicacoes, intimacoesPublicacoesList" 
+					   				action="#{intimacoesPublicacoesBean.alterar}"
+					   				value="Alterar" icon="ui-icon-closethick"
+					                styleClass="ui-priority-primary">
+					        <f:setPropertyActionListener target="#{intimacoesPublicacoesBean.intimacaoPublicacao}" value="#{intpub}" />
+					   </p:commandButton>
+					</p:column>
+				</p:dataTable>
+				<br/>
+				<h:commandLink style="float: right">
+				    <p:commandButton value="Export as XLS" ajax="false"/>
+				    <p:dataExporter type="xls" target="intimacoesPublicacoesList" fileName="advocacia" pageOnly="false" />
+				</h:commandLink>
+			</h:form>
+	    </ui:define>
   </ui:composition>
 </html>

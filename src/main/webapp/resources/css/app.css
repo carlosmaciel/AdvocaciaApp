@@ -1,0 +1,38 @@
+@charset "ISO-8859-1";
+body {
+	background-color: #fafafa;
+}
+h2 {
+	font-family: Arial,sans-serif;
+}
+.objectsCentered {
+	text-align: center;
+}
+
+.camposForm {
+	width: 100% !important;
+}
+
+.camposFormDataTable {
+	width: 90% !important;
+}
+
+.columnId {
+    width: 20px;
+    text-align: right;
+}
+
+.columnAlterar, .columnProcesso, .columnStatus {
+	width: 10%;
+}
+
+.ui-panelgrid.showcase-text-align-center .ui-grid-responsive .ui-panelgrid-cell {
+    text-align: center;
+}
+
+.customPanelGrid, .ui-panelgrid-content {
+    display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}

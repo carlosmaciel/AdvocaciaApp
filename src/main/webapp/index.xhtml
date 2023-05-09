@@ -6,11 +6,15 @@
     
   <ui:composition template="/layout/layout.xhtml">
     <ui:define name="conteudo">
-    	<h:form id="frmIndex">
-			<h:commandLink action="/cadastros/clientes.xhtml" value="Clientes"/><br/>
-			<h:commandLink action="/cadastros/processos.xhtml" value="Processos"/><br/>
-			<h:commandLink action="/cadastros/intimacoespublicacoes.xhtml" value="Intimações e Publicações"/>
-    	</h:form>
+    	<center>
+			<h2>Advocacia App</h2>
+						
+			<h:form>
+				<h:outputText rendered="#{homeBean.showLabelEmail}" value="Email enviado com sucesso!"/> <br/><br/>
+				<h:commandButton value = "Enviar Email"
+					action="#{homeBean.sendEmail}"/>			
+			</h:form>		
+		</center>
     </ui:define>
   </ui:composition>
 </html>

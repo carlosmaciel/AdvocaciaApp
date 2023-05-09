@@ -2,11 +2,66 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:p="http://primefaces.org/ui">
     
   <ui:composition template="/layout/layout.xhtml">
     <ui:define name="conteudo">
-      <h1>Página Inicial - Funcionalidade Principal</h1>
-    </ui:define>
+    		<center><h2>Cadastro de Processos</h2></center>		
+			<h:form id="frmProcessos">	
+				<h:panelGrid id="gridFormProcessos" styleClass="customPanelGrid" columns="2">				    
+				    <p:outputLabel for="numero">Número do Processo: </p:outputLabel>				    
+				    <p:inputText id="numero" styleClass="camposForm" value="#{processosBean.processo.numero}" requiredMessage="Campo Número do Processo é obrigatório!" required="true"/>
+				   
+				    <p:outputLabel for="cliente">Cliente: </p:outputLabel>	
+	                <p:selectOneMenu id="cliente" value="#{processosBean.processo.cliente}"
+	                			required="true" requiredMessage="Campo Cliente é obrigatório!" dynamic="true"
+	                			styleClass="camposForm">
+				    	<f:selectItem itemLabel="Selecione o cliente" noSelectionOption="true"/>  
+						<f:selectItems value="#{processosBean.clientes}" />
+	                </p:selectOneMenu>
+				   
+					<p:commandButton id="save" value="Salvar" tyleClass="ui-priority-primary"
+					              action="#{processosBean.salvar}" icon="ui-icon-disk" update="growl, frmProcessos, frmListaProcessos">
+					       <f:ajax execute="@form" render="@form"/>
+				   	</p:commandButton>
+				</h:panelGrid>  
+			</h:form> 
+				<br/>
+			<h:form id="frmListaProcessos">
+			    <p:dataTable id="processosList" var="processo" value="#{processosBean.processos}" emptyMessage="Não há registros na lista">
+					<p:column headerText="Id" styleClass="columnId">
+					   <h:outputText value="#{processo.id}"/>
+					</p:column>
+					
+					<p:column headerText="Número do Processo"  styleClass="objectsCentered" style="width: 20%">
+					   <p:inputText id="numero" value="#{processo.numero}" style="width:150px; text-align: right"/>
+					</p:column>
+					
+					<p:column headerText="Cliente" styleClass="objectsCentered">
+	                	<p:selectOneMenu id="cliente" value="#{processo.cliente}"
+		                			required="true" requiredMessage="Campo Cliente é obrigatório!" dynamic="true"  styleClass="camposFormDataTable">
+							<f:selectItems value="#{processosBean.clientes}" />
+		                </p:selectOneMenu>
+					</p:column>
+					
+					<p:column headerText="Status" styleClass="objectsCentered columnStatus">
+					   <p:selectOneMenu id="status" value="#{processo.status}">
+					   		<f:selectItem itemLabel="Inativo" itemValue="0"/>
+	                   		<f:selectItem itemLabel="Ativo" itemValue="1"/>
+	                   </p:selectOneMenu>
+					</p:column>
+					
+					<p:column headerText="Alterar" styleClass="objectsCentered columnAlterar">
+					   <p:commandButton update=":frmProcessos, processosList" 
+					   				action="#{processosBean.salvar}"
+					   				value="Alterar" icon="ui-icon-closethick"
+					                styleClass="ui-priority-primary" >
+					        <f:setPropertyActionListener target="#{processosBean.processo}" value="#{processo}" />
+					   </p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+	    </ui:define>
   </ui:composition>
 </html>

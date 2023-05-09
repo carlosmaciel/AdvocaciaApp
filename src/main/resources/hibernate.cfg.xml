@@ -18,5 +18,7 @@
  
 		<!-- validate | update | create | create-drop -->
 		<mapping class="br.com.advocacia.model.Cliente" />	
+		<mapping class="br.com.advocacia.model.Processo" />	
+		<mapping class="br.com.advocacia.model.IntimacaoPublicacao" />	
 	</session-factory>
 </hibernate-configuration>
