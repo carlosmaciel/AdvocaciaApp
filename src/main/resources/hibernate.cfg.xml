@@ -12,8 +12,7 @@
 		<property name="hibernate.show_sql">true</property>
 		<property name="hibernate.format_sql">true</property>
 		<property name="hibernate.jdbc.batch_size">20</property>
- 
- 
+  
 		<property name="hibernate.hbm2ddl.auto">update</property>
  
 		<!-- validate | update | create | create-drop -->

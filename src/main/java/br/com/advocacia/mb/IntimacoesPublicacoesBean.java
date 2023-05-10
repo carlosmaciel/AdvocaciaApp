@@ -1,7 +1,11 @@
 package br.com.advocacia.mb;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -36,6 +40,11 @@ public class IntimacoesPublicacoesBean implements Serializable{
     }
     
     public void salvar() {
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(intimacaoPublicacao.getData());
+    	cal.add(Calendar.DAY_OF_MONTH, 1);
+    	intimacaoPublicacao.setData(cal.getTime());
+    	
 		dao.salvar(intimacaoPublicacao);
 		novo();
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Intimação ou Publicação salva com sucesso."));

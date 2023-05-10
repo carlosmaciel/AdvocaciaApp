@@ -62,6 +62,7 @@ public class ClientesBean implements Serializable{
 		} catch (Exception e) {
 			Throwable result = e;
 			
+			//verifica se a exceção é devido a constraint de unicidade unique
 			if(result.getCause() instanceof SQLIntegrityConstraintViolationException || (result.getCause() != null && result.getCause().getCause() instanceof SQLIntegrityConstraintViolationException)) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Já existe um Cliente com este nome cadastrado."));
 				novo();

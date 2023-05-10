@@ -3,8 +3,10 @@ package br.com.advocacia.mb;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 
 import br.com.advocacia.util.Mail;
 
@@ -13,12 +15,10 @@ import br.com.advocacia.util.Mail;
 public class HomeBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	
-	private boolean showLabelEmail;
-	
+		
 	@PostConstruct
     public void init() {
-		showLabelEmail = false;
+		
     }
 	
 	public void sendEmail() {
@@ -32,17 +32,9 @@ public class HomeBean implements Serializable{
 		Boolean result = Mail.sendEmail(txtHtml);
 		
 		if(result)
-			showLabelEmail = true;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("E-mail enviado com sucesso!"));
 		else
-			showLabelEmail = false;
-	}
-
-	public boolean isShowLabelEmail() {
-		return showLabelEmail;
-	}
-
-	public void setShowLabelEmail(boolean showLabelEmail) {
-		this.showLabelEmail = showLabelEmail;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Erro ao enviar e-mail."));
 	}
 	
 }
